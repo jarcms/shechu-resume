@@ -1,0 +1,152 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# 数据库设计规范
+
+## 数据库配置
+在[application.properties](mdc:src/main/resources/application.properties)中配置数据库连接：
+
+```properties
+# 数据库配置
+spring.datasource.url=jdbc:mysql://localhost:3306/resume_db?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+spring.datasource.username=root
+spring.datasource.password=password
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# MyBatis-Plus配置
+mybatis-plus.configuration.map-underscore-to-camel-case=true
+mybatis-plus.global-config.db-config.logic-delete-field=deleted
+mybatis-plus.global-config.db-config.logic-delete-value=1
+mybatis-plus.global-config.db-config.logic-not-delete-value=0
+```
+
+## 核心表结构
+
+### 1. 管理员表 (admin_user)
+```sql
+CREATE TABLE admin_user (
+    id BIGINT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE COMMENT '登录名',
+    password VARCHAR(100) NOT NULL COMMENT '密码(BCrypt加密)',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
+
+### 2. 简历表 (resume)
+```sql
+CREATE TABLE resume (
+    id BIGINT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL COMMENT '简历名称',
+    is_active TINYINT DEFAULT 0 COMMENT '是否启用(0-否,1-是，只能有一个启用)',
+    content JSON NOT NULL COMMENT '简历内容(JSON格式)',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
+
+### 3. 主题配置表 (theme_config)
+```sql
+CREATE TABLE theme_config (
+    id BIGINT PRIMARY KEY,
+    name VARCHAR(50) NOT NULL COMMENT '主题名称',
+    is_active TINYINT DEFAULT 0 COMMENT '是否启用(0-否,1-是)',
+    primary_color VARCHAR(7) NOT NULL COMMENT '主题色（hex格式）',
+    create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+    update_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
+
+### 简历内容JSON结构示例
+```json
+{
+  "personalInfo": {
+    "name": "张三",
+    "title": "高级软件工程师", 
+    "phone": "138****8888",
+    "email": "zhangsan@example.com",
+    "location": "北京市朝阳区"
+  },
+  "summary": "具有5年以上Java开发经验，熟悉Spring Boot、微服务架构...",
+  "workExperience": [
+    {
+      "company": "XX科技有限公司",
+      "position": "高级Java工程师",
+      "startDate": "2020-06",
+      "endDate": "至今",
+      "description": "负责公司核心业务系统的开发和维护..."
+    }
+  ],
+  "projectExperience": [
+    {
+      "name": "电商平台系统",
+      "role": "技术负责人",
+      "startDate": "2021-03",
+      "endDate": "2022-01",
+      "technologies": ["Spring Boot", "Redis", "MySQL"],
+      "description": "负责电商平台的架构设计和核心功能开发..."
+    }
+  ],
+  "skills": ["Java", "Spring Boot", "MySQL", "Redis", "Vue.js"],
+  "education": [
+    {
+      "school": "XX大学",
+      "major": "计算机科学与技术",
+      "degree": "本科",
+      "startDate": "2015-09",
+      "endDate": "2019-06"
+    }
+  ]
+}
+```
+
+## 数据初始化
+
+### 初始管理员数据
+```sql
+INSERT INTO admin_user (id, username, password) 
+VALUES (1, 'admin', '$2a$10$N.zmdr9k7uOCQb376NoUnuTJ8iAt6Z5EHsM8lE9lBOsl7iKTVEFDa');
+-- 默认密码：admin123
+```
+
+### 初始主题配置数据
+```sql
+INSERT INTO theme_config (id, name, is_active, primary_color) 
+VALUES (1, '默认主题', 1, '#007bff');
+```
+
+### 示例简历数据
+[已包含在init.sql中的示例简历数据]
+
+## 设计原则
+
+### 数据约束
+1. **主键设计**：使用雪花算法生成的Long类型ID
+2. **唯一性约束**：
+   - 管理员用户名唯一
+   - 简历只能有一个启用状态
+   - 主题配置只能有一个启用状态
+3. **非空约束**：重要字段设置NOT NULL
+4. **JSON存储**：简历内容使用JSON格式存储，便于扩展
+
+### 表关系说明
+1. **admin_user表**：管理员信息表，独立存在
+2. **resume表**：简历信息表，通过is_active字段控制启用状态
+3. **theme_config表**：主题配置表，通过is_active字段控制启用状态
+
+### 性能优化
+1. **简化表结构**：避免过度设计，只保留必要的表
+2. **JSON字段**：存储灵活的结构化数据，减少表关联
+3. **索引设计**：为查询字段创建合适的索引
+
+### 业务规则
+1. **唯一启用**：
+   - 同一时间只能有一个简历处于启用状态
+   - 同一时间只能有一个主题配置处于启用状态
+2. **内容完整性**：
+   - 简历内容包含个人信息、简介、工作经历、项目经历、技能、教育背景等
+   - 主题配置必须包含主题名称和主题色
+3. **密码安全**：管理员密码使用BCrypt加密存储
+4. **简化维护**：去除不必要的日志和配置表，降低维护成本

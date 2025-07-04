@@ -1,0 +1,185 @@
+/* 章节样式 */
+.resume-content {
+    padding: 0;
+}
+
+.resume-section {
+    margin-bottom: 0;
+}
+
+.resume-section:last-child {
+    border-bottom: none;
+}
+
+.section-header {
+    background: var(--primary-color);
+    color: var(--text-white);
+    padding: 12px 40px;
+    position: relative;
+    font-size: 15px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-header::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 8px;
+    background: var(--primary-dark);
+}
+
+.section-header::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 15px solid var(--primary-color);
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+}
+
+.section-content {
+    padding: 25px 40px;
+    background: var(--bg-white);
+}
+
+/* 个人简介特殊样式 */
+.summary-content {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-primary);
+    text-align: justify;
+}
+
+/* 经历项目样式 */
+.work-item, .project-item, .education-item {
+    margin-bottom: 30px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.work-item:last-child, .project-item:last-child, .education-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.item-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--text-primary);
+    flex: 1;
+    min-width: 200px;
+}
+
+.item-date {
+    font-size: 14px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.item-subtitle {
+    font-size: 14px;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.item-description {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-primary);
+    text-align: justify;
+}
+
+.item-tech {
+    margin: 8px 0;
+    color: var(--text-secondary);
+    font-size: 13px;
+}
+
+/* 技能标签样式 */
+.skills-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.skill-item {
+    background: var(--primary-color);
+    color: var(--text-white);
+    padding: 6px 14px;
+    border-radius: 15px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.skill-item:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .section-header {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    .section-content {
+        padding: 20px;
+    }
+    
+    .item-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .item-title {
+        min-width: auto;
+        margin-bottom: 4px;
+        font-size: 15px;
+    }
+
+    .item-date {
+        font-size: 13px;
+    }
+
+    .item-subtitle {
+        font-size: 13px;
+    }
+
+    .item-description {
+        font-size: 13px;
+    }
+    
+    .skill-item {
+        padding: 4px 10px;
+        font-size: 12px;
+    }
+}
+
+/* 内容区域间隔 */
+.content-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+} 

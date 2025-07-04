@@ -1,0 +1,21 @@
+:root {
+    /* 主题色变量 - 通过JavaScript动态设置 */
+    --primary-color: #4B6EAF;  /* 默认使用标准蓝 */
+    --primary-dark: #3A5A8C;   /* 自动计算，比主题色深15% */
+    --primary-light: #6D8BC2;  /* 自动计算，比主题色浅15% */
+    
+    /* 固定的文字颜色 */
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --text-light: #999999;
+    --text-white: #ffffff;
+    
+    /* 固定的背景色 */
+    --bg-primary: #f5f7fa;
+    --bg-white: #ffffff;
+    --bg-section: #f8f9fb;
+    
+    /* 固定的边框和阴影 */
+    --border-color: #e1e5e9;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}

@@ -1,0 +1,73 @@
+/* 头部样式 */
+.resume-header {
+    background: var(--primary-color);
+    color: var(--text-white);
+    padding: 30px 40px;
+    position: relative;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.header-info {
+    flex: 1;
+}
+
+.header-name {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.header-title {
+    font-size: 14px;
+    opacity: 0.95;
+    margin-bottom: 25px;
+    font-weight: normal;
+}
+
+.header-contact {
+    display: grid;
+    grid-template-columns: auto auto auto;
+    gap: 8px 20px;
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    opacity: 0.95;
+    white-space: nowrap;
+}
+
+.contact-item .icon {
+    width: 14px;
+    height: 14px;
+    opacity: 0.9;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .resume-header {
+        padding: 25px 20px;
+    }
+    
+    .header-name {
+        font-size: 22px;
+    }
+    
+    .header-title {
+        font-size: 13px;
+    }
+    
+    .header-contact {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+} 

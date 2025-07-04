@@ -1,0 +1,191 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 后端开发规范
+
+## Maven依赖管理
+
+### 已配置依赖
+当前[pom.xml](mdc:pom.xml)中已包含以下依赖：
+
+```xml
+<!-- MyBatis-Plus -->
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-boot-starter</artifactId>
+    <version>3.5.2</version>
+</dependency>
+
+<!-- JWT -->
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt</artifactId>
+    <version>0.9.1</version>
+</dependency>
+
+<!-- PDF导出 -->
+<dependency>
+    <groupId>com.itextpdf</groupId>
+    <artifactId>itextpdf</artifactId>
+    <version>5.5.13.3</version>
+</dependency>
+<dependency>
+    <groupId>com.itextpdf</groupId>
+    <artifactId>itext-asian</artifactId>
+    <version>5.2.0</version>
+</dependency>
+
+<!-- Word导出 -->
+<dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-ooxml</artifactId>
+    <version>5.2.0</version>
+</dependency>
+
+<!-- 数据验证 -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+
+<!-- JSON处理 -->
+<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>fastjson</artifactId>
+    <version>2.0.25</version>
+</dependency>
+
+<!-- 密码加密 -->
+<dependency>
+    <groupId>org.springframework.security</groupId>
+    <artifactId>spring-security-crypto</artifactId>
+</dependency>
+```
+
+## 项目结构规范
+
+### Java包结构
+```
+com.shechubbb.web.resume.resume
+├── config/          # 配置类
+│   ├── JwtInterceptor.java
+│   ├── MybatisPlusConfig.java
+│   └── WebMvcConfig.java
+├── controller/      # 控制器层
+│   ├── AdminController.java
+│   ├── ResumeController.java
+│   └── UserController.java
+├── service/         # 服务层
+│   ├── AdminUserService.java
+│   ├── ResumeService.java
+│   └── impl/        # 服务实现
+├── mapper/          # 数据访问层
+│   ├── AdminUserMapper.java
+│   └── ResumeMapper.java
+├── entity/          # 实体类
+│   ├── AdminUser.java
+│   └── Resume.java
+├── dto/             # 数据传输对象
+│   ├── LoginDTO.java
+│   ├── ChangePasswordDTO.java
+│   └── ResumeDTO.java
+├── vo/              # 视图对象
+│   └── Result.java
+├── util/            # 工具类
+│   ├── JwtUtil.java
+│   └── PasswordUtil.java
+├── exception/       # 异常处理
+│   ├── BusinessException.java
+│   └── GlobalExceptionHandler.java
+└── ResumeApplication.java
+```
+
+## API设计规范
+
+### 统一响应格式
+使用[Result.java](mdc:src/main/java/com/shechubbb/web/resume/resume/vo/Result.java)作为统一响应格式：
+```java
+{
+    "code": 1,
+    "message": "操作成功",
+    "data": {}
+}
+```
+说明：code=1 表示成功，code=0 表示失败
+
+### 接口路径规范
+- 管理后台API：`/api/admin/**`
+- 用户API：`/api/user/**`
+- 导出功能：`/api/admin/resume/{id}/export/**`
+
+### 已实现的API接口
+1. **管理员认证**
+   - POST `/api/admin/login` - 管理员登录
+   - POST `/api/admin/change-password` - 修改密码
+
+2. **简历管理**
+   - GET `/api/admin/resume` - 获取简历列表
+   - GET `/api/admin/resume/{id}` - 获取单个简历
+   - POST `/api/admin/resume` - 创建简历
+   - PUT `/api/admin/resume/{id}` - 更新简历
+   - DELETE `/api/admin/resume/{id}` - 删除简历
+   - PUT `/api/admin/resume/{id}/active` - 设置简历为启用状态
+
+3. **导出功能**
+   - GET `/api/admin/resume/{id}/export/pdf` - 导出PDF
+
+4. **用户展示**
+   - GET `/api/user/resume` - 获取启用的简历
+
+## 数据库设计
+
+### 核心表结构
+参考[init.sql](mdc:src/main/resources/init.sql)：
+1. **admin_user** - 管理员表
+2. **resume** - 简历表
+
+### 字段约定
+- 主键：使用雪花算法生成的Long类型ID
+- 创建时间：create_time (DATETIME)
+- 更新时间：update_time (DATETIME)
+- 简历启用状态：is_active (TINYINT, 0-未启用, 1-启用)
+
+## 安全规范
+
+### JWT认证
+- Token有效期：7天（配置在[application.properties](mdc:src/main/resources/application.properties)）
+- 使用[JwtUtil.java](mdc:src/main/java/com/shechubbb/web/resume/resume/util/JwtUtil.java)处理token
+- 通过[JwtInterceptor.java](mdc:src/main/java/com/shechubbb/web/resume/resume/config/JwtInterceptor.java)进行拦截验证
+
+### 密码安全
+- 使用[PasswordUtil.java](mdc:src/main/java/com/shechubbb/web/resume/resume/util/PasswordUtil.java)进行BCrypt加密
+- 默认管理员密码：admin123（已加密存储）
+
+## PDF导出规范
+
+### 中文字体支持
+- 使用iText 5.5.13.3 + itext-asian 5.2.0
+- 字体配置：STSong-Light + UniGB-UCS2-H
+- 支持中文内容的PDF导出
+
+### 导出内容顺序
+1. 个人信息
+2. 个人简介
+3. 教育背景
+4. 工作经历
+5. 项目经历
+6. 技能特长
+
+## 异常处理规范
+- 使用[GlobalExceptionHandler.java](mdc:src/main/java/com/shechubbb/web/resume/resume/exception/GlobalExceptionHandler.java)统一处理异常
+- 业务异常使用[BusinessException.java](mdc:src/main/java/com/shechubbb/web/resume/resume/exception/BusinessException.java)
+- 返回统一的错误响应格式
+
+## 配置文件规范
+[application.properties](mdc:src/main/resources/application.properties)包含：
+- 数据库连接配置
+- JWT配置（密钥、过期时间）
+- MyBatis-Plus配置
+- 服务器端口配置

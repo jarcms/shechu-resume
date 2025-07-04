@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理后台 - 个人简历系统</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- 登录页面 -->
+    <div id="login-page" class="login-container">
+        <form class="login-form" onsubmit="login(event)">
+            <h1 style="text-align: center; margin-bottom: 30px;">管理后台登录</h1>
+            <div id="login-message"></div>
+            <div class="form-group">
+                <label>用户名：</label>
+                <input type="text" id="username" value="admin" required>
+            </div>
+            <div class="form-group">
+                <label>密码：</label>
+                <input type="password" id="password" value="admin123" required>
+            </div>
+            <button type="submit" style="width: 100%;">登录</button>
+        </form>
+    </div>
+
+    <!-- 管理面板 -->
+    <div id="admin-panel" class="admin-panel">
+        <!-- 左侧菜单 -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="sidebar-title">舍出-简历管理系统</h1>
+            </div>
+            <div class="sidebar-menu">
+                <a href="#" onclick="showTab('resume-management', this)" class="tab-button active">简历管理</a>
+                <a href="#" onclick="showTab('theme-management', this)" class="tab-button">主题设置</a>
+                <a href="#" onclick="showTab('password-management', this)" class="tab-button">修改密码</a>
+                <a href="#" onclick="logout()">退出登录</a>
+            </div>
+        </div>
+
+        <!-- 主要内容区 -->
+        <div class="main-content">
+            <!-- 简历管理 -->
+            <div id="resume-management" class="tab-content" style="display: block;">
+                <div class="content-nav">
+                    <h2 class="content-nav-title">简历管理</h2>
+                    <div class="content-nav-breadcrumb">首页 / 简历管理</div>
+                </div>
+
+                <div class="content">
+                    <div id="message"></div>
+
+                    <div class="toolbar">
+                        <button onclick="loadResumes()" class="success">刷新列表</button>
+                        <button onclick="showAddForm()">添加简历</button>
+                    </div>
+
+                    <div id="resume-list" class="resume-list">
+                        <div style="text-align: center; padding: 20px; color: #666;">
+                            正在加载简历数据...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 主题设置标签页 -->
+            <div id="theme-management" class="tab-content" style="display: none;">
+                <div class="content-nav">
+                    <h2 class="content-nav-title">主题设置</h2>
+                    <div class="content-nav-breadcrumb">首页 / 主题设置</div>
+                </div>
+                <div class="content">
+                    <div class="theme-list">
+                        <!-- 主题列表将通过JavaScript动态生成 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 修改密码 -->
+            <div id="password-management" class="tab-content" style="display: none;">
+                <div class="content-nav">
+                    <h2 class="content-nav-title">修改密码</h2>
+                    <div class="content-nav-breadcrumb">首页 / 修改密码</div>
+                </div>
+
+                <div class="content">
+                    <div id="password-message"></div>
+                    <form onsubmit="changePassword(event)" style="max-width: 400px;">
+                        <div class="form-group">
+                            <label>旧密码：</label>
+                            <input type="password" id="old-password" required>
+                        </div>
+                        <div class="form-group">
+                            <label>新密码：</label>
+                            <input type="password" id="new-password" required>
+                        </div>
+                        <button type="submit">修改密码</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="resume-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">添加简历</h3>
+                <button class="modal-close" onclick="hideForm()">&times;</button>
+            </div>
+            <div class="modal-main">
+                <!-- 内部导航 -->
+                <div class="modal-nav">
+                    <ul class="modal-nav-list">
+                        <li class="modal-nav-item active" onclick="scrollToSection('basic-info')">基本信息</li>
+                        <li class="modal-nav-item" onclick="scrollToSection('personal-info')">个人信息</li>
+                        <li class="modal-nav-item" onclick="scrollToSection('education')">教育背景</li>
+                        <li class="modal-nav-item" onclick="scrollToSection('work-exp')">工作经历</li>
+                        <li class="modal-nav-item" onclick="scrollToSection('project-exp')">项目经历</li>
+                        <li class="modal-nav-item" onclick="scrollToSection('skills')">技能特长</li>
+                    </ul>
+                </div>
+
+                <!-- 表单内容 -->
+                <div class="modal-content">
+                    <form id="resume-form" onsubmit="saveResume(event)">
+                        <!-- 基本信息 -->
+                        <div id="basic-info" class="section expanded">
+                            <div class="section-header" onclick="toggleSection(this)">
+                                <h3 class="section-title">基本信息</h3>
+                                <span class="section-toggle">▼</span>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label>简历名称：</label>
+                                    <input type="text" id="resume-name" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 个人信息 -->
+                        <div id="personal-info" class="section expanded">
+                            <div class="section-header" onclick="toggleSection(this)">
+                                <h3 class="section-title">个人信息</h3>
+                                <span class="section-toggle">▼</span>
+                            </div>
+                            <div class="section-content">
+                                <div class="form-group">
+                                    <label>姓名：</label>
+                                    <input type="text" id="personal-name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>职位：</label>
+                                    <input type="text" id="personal-title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>电话：</label>
+                                    <input type="text" id="personal-phone" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>邮箱：</label>
+                                    <input type="email" id="personal-email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>所在地：</label>
+                                    <input type="text" id="personal-location" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>个人简介</label>
+                                    <textarea id="personal-summary" rows="4" class="form-control"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 教育背景 -->
+                        <div id="education" class="section expanded">
+                            <div class="section-header" onclick="toggleSection(this)">
+                                <h3 class="section-title">教育背景</h3>
+                                <span class="section-toggle">▼</span>
+                            </div>
+                            <div class="section-content">
+                                <div id="education-list"></div>
+                                <button type="button" onclick="addEducation()" class="btn btn-secondary">添加教育经历</button>
+                            </div>
+                        </div>
+
+                        <!-- 工作经历 -->
+                        <div id="work-exp" class="section expanded">
+                            <div class="section-header" onclick="toggleSection(this)">
+                                <h3 class="section-title">工作经历</h3>
+                                <span class="section-toggle">▼</span>
+                            </div>
+                            <div class="section-content">
+                                <div id="work-experience-list"></div>
+                                <button type="button" onclick="addWorkExperience()" class="btn btn-secondary">添加工作经历</button>
+                            </div>
+                        </div>
+
+                        <!-- 项目经历 -->
+                        <div id="project-exp" class="section expanded">
+                            <div class="section-header" onclick="toggleSection(this)">
+                                <h3 class="section-title">项目经历</h3>
+                                <span class="section-toggle">▼</span>
+                            </div>
+                            <div class="section-content">
+                                <div id="project-experience-list"></div>
+                                <button type="button" onclick="addProjectExperience()" class="btn btn-secondary">添加项目经历</button>
+                            </div>
+                        </div>
+
+                        <!-- 技能特长 -->
+                        <div id="skills" class="section expanded">
+                            <div class="section-header" onclick="toggleSection(this)">
+                                <h3 class="section-title">技能特长</h3>
+                                <span class="section-toggle">▼</span>
+                            </div>
+                            <div class="section-content">
+                                <div id="skills-list"></div>
+                                <button type="button" onclick="addSkill()" class="btn btn-secondary">添加技能</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="hideForm()">取消</button>
+                <button type="submit" form="resume-form" class="success">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="admin-footer">
+        <div>© 2025 舍出简历管理系统 v1.0.0</div>
+    </footer>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

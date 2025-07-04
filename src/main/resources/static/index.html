@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人简历</title>
+    
+    <!-- 引入CSS文件 -->
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/base.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/sections.css">
+    <link rel="stylesheet" href="/css/sticky.css">
+    <link rel="stylesheet" href="/css/nav.css">
+</head>
+<body>
+    <!-- 吸顶导航栏 -->
+    <div class="sticky-header" id="sticky-header">
+        <div class="sticky-content">
+            <div class="sticky-info">
+                <div class="sticky-name" id="sticky-name"></div>
+                <div class="sticky-title" id="sticky-title"></div>
+            </div>
+            <div class="sticky-contact" id="sticky-contact"></div>
+        </div>
+    </div>
+
+    <!-- 浮动导航 -->
+    <nav class="floating-nav" id="floating-nav">
+        <a class="nav-item" data-section="personal-info">个人信息</a>
+        <a class="nav-item" data-section="summary">个人简介</a>
+        <a class="nav-item" data-section="education">教育背景</a>
+        <a class="nav-item" data-section="work">工作经历</a>
+        <a class="nav-item" data-section="projects">项目经历</a>
+        <a class="nav-item" data-section="skills">技能特长</a>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <div class="container">
+        <div id="resume-content">
+            <div class="loading">正在加载简历数据...</div>
+        </div>
+
+        <footer class="footer">
+            <div>© 2025 舍出简历管理系统 v1.0.0</div>
+        </footer>
+    </div>
+
+    <!-- 引入JavaScript文件 -->
+    <script src="/js/resume.js"></script>
+</body>
+</html>

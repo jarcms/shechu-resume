@@ -1,0 +1,96 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 个人简历项目开发规范
+
+## 项目概述
+这是一个基于Spring Boot的个人简历展示系统，包含管理后台和用户展示页面。项目已完成核心功能开发，支持简历管理、PDF导出、用户展示等功能。
+
+## 项目架构
+
+### 目录结构
+- [pom.xml](mdc:pom.xml) - Maven项目配置文件
+- [src/main/java/](mdc:src/main/java/) - Java后端代码
+- [src/main/resources/static/](mdc:src/main/resources/static/) - 静态资源目录
+  - [index.html](mdc:src/main/resources/static/index.html) - 用户展示页面
+  - [admin/index.html](mdc:src/main/resources/static/admin/index.html) - 管理后台页面
+- [src/main/resources/application.properties](mdc:src/main/resources/application.properties) - 应用配置
+- [src/main/resources/init.sql](mdc:src/main/resources/init.sql) - 数据库初始化脚本
+
+### 核心模块
+1. **后端服务** - Spring Boot应用，提供RESTful API服务
+2. **管理后台** - 原生JavaScript单页应用，部署在`/admin/`路径下
+3. **用户展示页** - 响应式简历展示页面，部署在根路径
+
+## 已实现功能
+
+### 管理后台功能
+- **管理员认证**：JWT token认证，支持登录/登出
+- **简历管理**：CRUD操作，支持多套简历但只能启用一个
+- **PDF导出**：支持中文字体的PDF导出功能
+- **密码修改**：支持管理员密码修改
+- **访问路径**：通过`/admin/`访问管理后台
+
+### 用户展示功能
+- **简历展示**：展示当前启用的简历，支持响应式设计
+- **动态标题**：页面标题格式为"姓名-岗位-个人简历"
+- **吸顶导航**：滚动时显示简化的个人信息
+
+### 简历内容结构
+简历内容按以下顺序展示：
+1. 个人信息（姓名、职位、联系方式等）
+2. 个人简介
+3. 教育背景
+4. 工作经历
+5. 项目经历
+6. 技能特长
+
+## 技术栈
+
+### 后端技术
+- **Java 8** - 开发语言
+- **Spring Boot 2.6.13** - 主框架
+- **MyBatis-Plus 3.5.2** - ORM框架
+- **JWT 0.9.1** - 身份认证
+- **MySQL** - 数据库
+- **iText 5.5.13.3** - PDF导出
+- **Apache POI 5.2.0** - Word导出
+
+### 前端技术
+- **原生HTML/CSS/JavaScript** - 前端技术栈
+- **响应式设计** - 适配桌面和移动设备
+- **现代CSS特性** - Grid、Flexbox、CSS变量
+
+## 开发规范
+
+### 后端开发
+1. 遵循Spring Boot最佳实践
+2. 使用MyBatis-Plus进行数据操作
+3. JWT token用于API认证
+4. RESTful API设计规范
+5. 统一异常处理和响应格式
+
+### 前端开发
+1. 原生HTML/CSS/JavaScript开发
+2. 响应式设计，适配多种设备
+3. 直接在`src/main/resources/static/`目录下开发
+4. 一体化部署，无需额外构建步骤
+
+### 部署方式
+- 前端页面直接位于`src/main/resources/static/`目录
+- 管理后台位于`src/main/resources/static/admin/`目录
+- 整个项目打包成jar包直接部署，无需额外前端构建
+
+## 开发注意事项
+1. 前端代码直接在Spring Boot的static目录下开发
+2. 管理后台的访问路径必须是`/admin/`
+3. 数据库设计简化为2张表：admin_user（管理员）和resume（简历）
+4. 简历内容使用JSON格式存储，包含个人信息、工作经历、项目经历等
+5. 同一时间只能有一个简历处于启用状态
+6. API响应格式：code=1成功，code=0失败
+7. 使用原生JavaScript开发，无需构建工具
+8. 前端设计要注重用户体验和视觉效果，响应式适配
+9. PDF导出需要携带JWT token进行认证
+10. 页面标题动态显示为"姓名-岗位-个人简历"格式

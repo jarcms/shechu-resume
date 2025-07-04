@@ -1,0 +1,27 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+# Project Structure Guide
+
+This is a Spring Boot based resume management system with a frontend built using vanilla JavaScript.
+
+## Key Files and Directories
+
+### Backend Structure
+- [src/main/java/com/shechubbb/web/resume/ResumeApplication.java](mdc:src/main/java/com/shechubbb/web/resume/ResumeApplication.java) - Main application entry point
+- [src/main/resources/application.properties](mdc:src/main/resources/application.properties) - Application configuration
+- [src/main/resources/init.sql](mdc:src/main/resources/init.sql) - Database initialization script
+
+### Frontend Structure
+- [src/main/resources/static/index.html](mdc:src/main/resources/static/index.html) - User-facing resume page
+- [src/main/resources/static/admin/index.html](mdc:src/main/resources/static/admin/index.html) - Admin dashboard
+- [src/main/resources/static/js/resume.js](mdc:src/main/resources/static/js/resume.js) - User frontend logic
+- [src/main/resources/static/admin/js/admin.js](mdc:src/main/resources/static/admin/js/admin.js) - Admin dashboard logic
+
+### CSS Structure
+- [src/main/resources/static/css/variables.css](mdc:src/main/resources/static/css/variables.css) - Theme variables
+- [src/main/resources/static/css/base.css](mdc:src/main/resources/static/css/base.css) - Base styles
+- [src/main/resources/static/css/sections.css](mdc:src/main/resources/static/css/sections.css) - Resume sections styles
+- [src/main/resources/static/admin/css/style.css](mdc:src/main/resources/static/admin/css/style.css) - Admin dashboard styles
